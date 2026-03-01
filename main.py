@@ -1,5 +1,6 @@
 import json
 from typing import List
+from typing import Tuple
 
 class Usuario:
     def __init__(self,id_user: int, name: str, edad: int, sexo: str, telefono: str, email: str):
@@ -26,8 +27,8 @@ class Motel:
     def __init__(self, usuario: Usuario, rooms: List[Room]):
         self.usuario: Usuario = usuario
         self.rooms: list[Room] = rooms
-        self.reservados: List[tuple[int, str]] = []
-        self.rooms_disponibles: List[int] = [room.id for room in rooms if room.esta_disponible()]
+        self.reservados: List[Tuple[int, int]] = []
+        self.rooms_disponibles: List[int] = [room.id for room in rooms if room.reservada_por is None]
         
     def mostrar_rooms_disponibles(self):
         return self.rooms_disponibles
@@ -44,19 +45,22 @@ class Motel:
         if (room_id, id_usuario) in self.reservados:
             self.reservados.remove((room_id, id_usuario))
             self.rooms_disponibles.append(room_id)
+            for room in self.rooms:
+                if room.id == room_id:
+                    room.reservada_por = None
             return print(f"Reserva de Room {room_id} cancelada para {self.usuario.name}")
         return print(f"Room {room_id} no reservado para cancelar")
         
 if __name__ == "__main__":
 
-    with open("datos.json", "r") as file:
+    with open("data/datos.json", "r") as file:
         data = json.load(file)
 
     # Crear usuarios
     usuarios = []
     for u in data["usuarios"]:
         usuario = Usuario(
-            id=u["id"],
+            id_user=u["id"],   # corregido
             name=u["name"],
             edad=u["edad"],
             sexo=u["sexo"],
@@ -65,20 +69,17 @@ if __name__ == "__main__":
         )
         usuarios.append(usuario)
 
-    # Crear rooms
-    rooms = []
-    for r in data["rooms"]:
-        room = Room(
-            id=r["id"],
-            tipo=r["tipo"],
-            precio=r["precio"],
-            caracteristicas=r["caracteristicas"],
-            reservada_por=r["reservada_por"]
-        )
-        rooms.append(room)
+    # Seleccionamos un usuario activo (ejemplo: el primero)
+    usuario_activo = usuarios[0]
 
-    motel = Motel(usuarios, rooms)
+    # Crear motel con usuario activo
+    motel = Motel(usuario_activo, rooms)
 
-    motel.mostrar_rooms_disponibles()
-    motel.reservar_room(usuario_id=2, room_id=1)
-    motel.mostrar_rooms_disponibles()
+    print("Rooms disponibles inicialmente:")
+    print(motel.mostrar_rooms_disponibles())
+
+    # Reservar habitación correctamente
+    motel.reservar_room(room_id=1, id_usuario=usuario_activo.id_user)
+
+    print("Rooms disponibles después de reservar:")
+    print(motel.mostrar_rooms_disponibles())
