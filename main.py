@@ -83,3 +83,4 @@ if __name__ == "__main__":
 
     print("Rooms disponibles después de reservar:")
     print(motel.mostrar_rooms_disponibles())
+#hola
