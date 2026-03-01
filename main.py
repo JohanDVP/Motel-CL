@@ -23,14 +23,24 @@ class Motel:
     def __init__(self, usuario: Usuario, rooms: List[Room]):
         self.usuario: Usuario = usuario
         self.rooms: list[Room] = rooms
+        self.reservados: List[int] = []
+        self.rooms_disponibles: List[int] = [room.id for room in rooms]
         
     def reservar_room(self, room_id: int):
         for room in self.rooms:
             if room.id == room_id:
+                self.reservados.append(room_id)
+                self.rooms_disponibles.remove(room_id)
                 print(f"Room {room_id} reservado para {self.usuario.name}")
                 return
         print(f"Room {room_id} no disponible") 
-        
+    
+    def cancelar_reserva(self, room_id: int):
+        if room_id in self.reservados:
+            self.reservados.remove(room_id)
+            self.rooms_disponibles.append(room_id)
+            return print(f"Reserva de Room {room_id} cancelada para {self.usuario.name}")
+        return print(f"Room {room_id} no reservado para cancelar")
         
 if __name__ == "__main__":
     with open("datos.json", "r") as file:
