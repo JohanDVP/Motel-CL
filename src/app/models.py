@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from dataclasses import dataclass, field
 
 @dataclass
@@ -26,3 +27,5 @@ class Reserva: #reserva de cliente
     total: float
     estado: str
     
+
+

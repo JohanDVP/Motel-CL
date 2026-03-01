@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 class DatosIncorrectos(Exception): #datos incorrectos
     pass
 
