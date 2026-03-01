@@ -1,0 +1,36 @@
+{
+  "usuarios": [
+    {
+      "id": 1,
+      "name": "Maria",
+      "edad": 30,
+      "sexo": "Femenino",
+      "telefono": "1234567890",
+      "email": "maria@example.com"
+    },
+    {
+      "id": 2,
+      "name": "Juan",
+      "edad": 35,
+      "sexo": "Masculino",
+      "telefono": "0987654321",
+      "email": "juan@example.com"
+    }
+  ],
+  "rooms": [
+    {
+      "id": 1,
+      "tipo": "Sencilla",
+      "precio": 50.0,
+      "caracteristicas": ["Cama individual", "Baño privado"],
+      "reservada_por": null
+    },
+    {
+      "id": 2,
+      "tipo": "Doble",
+      "precio": 80.0,
+      "caracteristicas": ["Cama matrimonial", "Baño privado", "TV"],
+      "reservada_por": 1
+    }
+  ]
+}
