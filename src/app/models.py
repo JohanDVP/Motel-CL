@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from dataclasses import dataclass, field
 
 @dataclass
