@@ -1,4 +1,4 @@
-class ErrorInesperado(Exception): #Excepcion base
+class DatosIncorrectos(Exception): #datos incorrectos
     pass
 
 class UsuarioNoEncontradoError(Exception): #Si no existe el user

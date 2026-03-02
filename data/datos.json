@@ -30,7 +30,8 @@
       "tipo": "Doble",
       "precio": 80.0,
       "caracteristicas": ["Cama matrimonial", "Baño privado", "TV"],
-      "reservada_por": 1
+      "reservada_por": null
     }
-  ]
+  ],
+  "reservas": []
 }
