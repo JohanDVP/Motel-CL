@@ -12,22 +12,19 @@ from src.app.exceptions import (
 )
 
 # estos helpers crean servicios con datos falsos para no tocar el JSON real
-def hacer_rooms(rooms: list[Room]) -> RoomService:
-    """Crea un RoomService con habitaciones de prueba."""
+def hacer_rooms(rooms: list[Room]) -> RoomService: 
     storage = MagicMock()
     storage.obtener_todas.return_value = rooms
     return RoomService(storage)
 
 
 def hacer_usuarios(usuarios: list[Usuario]) -> UsuarioService:
-    """Crea un UsuarioService con usuarios de prueba."""
     storage = MagicMock()
     storage.obtener_todos.return_value = usuarios
     return UsuarioService(storage)
 
 
 def hacer_reservas(reservas: list[Reserva], rooms: list[Room], usuarios: list[Usuario]) -> ReservaService:
-    """Crea un ReservaService con datos de prueba."""
     storage = MagicMock()
     storage.obtener_todas.return_value = reservas
     return ReservaService(storage, hacer_rooms(rooms), hacer_usuarios(usuarios))
@@ -36,7 +33,6 @@ def hacer_reservas(reservas: list[Reserva], rooms: list[Room], usuarios: list[Us
 # pruebas de habitaciones
 
 def test_solo_muestra_rooms_disponibles():
-    """No muestra habitaciones ocupadas."""
     rooms = [
         Room(id=1, tipo="Sencilla", precio=50.0, reservada_por=None),
         Room(id=2, tipo="Doble", precio=80.0, reservada_por=1),
@@ -45,13 +41,11 @@ def test_solo_muestra_rooms_disponibles():
 
 
 def test_encuentra_room_por_id():
-    """Encuentra la habitacion correcta."""
     rooms = [Room(id=3, tipo="Suite", precio=120.0)]
     assert hacer_rooms(rooms).buscar(3).tipo == "Suite"
 
 
 def test_room_que_no_existe_lanza_error():
-    """Lanza error si la habitacion no existe."""
     with pytest.raises(RoomNoEncontradaError):
         hacer_rooms([]).buscar(99)
 
@@ -59,26 +53,22 @@ def test_room_que_no_existe_lanza_error():
 # pruebas de usuarios
 
 def test_encuentra_usuario_por_id():
-    """Encuentra el usuario correcto."""
     usuarios = [Usuario(id_user=1, name="Maria", edad=30, sexo="F", telefono="123", email="m@m.com")]
     assert hacer_usuarios(usuarios).buscar(1).name == "Maria"
 
 
 def test_usuario_que_no_existe_lanza_error():
-    """Lanza error si el usuario no existe."""
     with pytest.raises(UsuarioNoEncontradoError):
         hacer_usuarios([]).buscar(5)
 
 
 def test_email_sin_arroba_lanza_error():
-    """Lanza error si el email no tiene @."""
     u = Usuario(id_user=1, name="Juan", edad=25, sexo="M", telefono="123", email="noesvalido")
     with pytest.raises(DatosInvalidosError):
         hacer_usuarios([]).registrar(u)
 
 
 def test_telefono_vacio_lanza_error():
-    """Lanza error si el telefono esta vacio."""
     u = Usuario(id_user=1, name="Juan", edad=25, sexo="M", telefono="   ", email="j@j.com")
     with pytest.raises(DatosInvalidosError):
         hacer_usuarios([]).registrar(u)
@@ -87,7 +77,6 @@ def test_telefono_vacio_lanza_error():
 # pruebas de reservas
 
 def test_reserva_calcula_bien_el_total():
-    """El total es precio multiplicado por horas."""
     room = Room(id=1, tipo="Sencilla", precio=50.0, reservada_por=None)
     usuario = Usuario(id_user=1, name="Maria", edad=30, sexo="F", telefono="123", email="m@m.com")
     reserva = hacer_reservas([], [room], [usuario]).crear(1, 1, 3)
@@ -95,7 +84,6 @@ def test_reserva_calcula_bien_el_total():
 
 
 def test_no_se_puede_reservar_room_ocupada():
-    """Lanza error si la habitacion ya esta reservada."""
     room = Room(id=1, tipo="Sencilla", precio=50.0, reservada_por=2)
     usuario = Usuario(id_user=1, name="Maria", edad=30, sexo="F", telefono="123", email="m@m.com")
     with pytest.raises(RoomNoDisponibleError):
@@ -103,7 +91,6 @@ def test_no_se_puede_reservar_room_ocupada():
 
 
 def test_horas_en_cero_lanza_error():
-    """Lanza error si las horas son 0."""
     room = Room(id=1, tipo="Sencilla", precio=50.0, reservada_por=None)
     usuario = Usuario(id_user=1, name="Maria", edad=30, sexo="F", telefono="123", email="m@m.com")
     with pytest.raises(DatosInvalidosError):
@@ -111,6 +98,5 @@ def test_horas_en_cero_lanza_error():
 
 
 def test_cancelar_reserva_que_no_existe():
-    """Lanza error si la reserva no existe."""
     with pytest.raises(ReservaNoEncontradaError):
         hacer_reservas([], [], []).cancelar(999)
