@@ -1,5 +1,14 @@
 {
-  "usuarios": [],
+  "usuarios": [
+    {
+      "id": 1,
+      "name": "johan",
+      "edad": 18,
+      "sexo": "masculino",
+      "telefono": "111",
+      "email": "gg@gmail.com"
+    }
+  ],
   "rooms": [
     {
       "id": 1,
@@ -20,7 +29,7 @@
         "Baño privado",
         "TV"
       ],
-      "reservada_por": null
+      "reservada_por": 1
     }
   ],
   "reservas": [
@@ -31,6 +40,14 @@
       "horas": 1,
       "total": 50.0,
       "estado": "cancelada"
+    },
+    {
+      "id": 2,
+      "id_usuario": 1,
+      "id_room": 2,
+      "horas": 5,
+      "total": 400.0,
+      "estado": "activa"
     }
   ]
 }

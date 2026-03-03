@@ -11,7 +11,6 @@ from src.app.exceptions import (
     ReservaNoEncontradaError,
 )
 
-
 # estos helpers crean servicios con datos falsos para no tocar el JSON real
 def hacer_rooms(rooms: list[Room]) -> RoomService:
     """Crea un RoomService con habitaciones de prueba."""
