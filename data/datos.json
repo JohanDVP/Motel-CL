@@ -1,37 +1,36 @@
 {
-  "usuarios": [
-    {
-      "id": 1,
-      "name": "Maria",
-      "edad": 30,
-      "sexo": "Femenino",
-      "telefono": "1234567890",
-      "email": "maria@example.com"
-    },
-    {
-      "id": 2,
-      "name": "Juan",
-      "edad": 35,
-      "sexo": "Masculino",
-      "telefono": "0987654321",
-      "email": "juan@example.com"
-    }
-  ],
+  "usuarios": [],
   "rooms": [
     {
       "id": 1,
       "tipo": "Sencilla",
       "precio": 50.0,
-      "caracteristicas": ["Cama individual", "Baño privado"],
+      "caracteristicas": [
+        "Cama individual",
+        "Baño privado"
+      ],
       "reservada_por": null
     },
     {
       "id": 2,
       "tipo": "Doble",
       "precio": 80.0,
-      "caracteristicas": ["Cama matrimonial", "Baño privado", "TV"],
+      "caracteristicas": [
+        "Cama matrimonial",
+        "Baño privado",
+        "TV"
+      ],
       "reservada_por": null
     }
   ],
-  "reservas": []
+  "reservas": [
+    {
+      "id": 1,
+      "id_usuario": 1,
+      "id_room": 1,
+      "horas": 1,
+      "total": 50.0,
+      "estado": "cancelada"
+    }
+  ]
 }

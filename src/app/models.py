@@ -24,7 +24,7 @@ class Reserva: #reserva de cliente
     id_room: int
     horas: int
     total: float
-    estado: str
+    estado: str = "activa"
     
 
 

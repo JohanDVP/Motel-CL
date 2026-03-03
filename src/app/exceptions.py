@@ -1,16 +1,19 @@
-class DatosIncorrectos(Exception): #datos incorrectos
+class RoomNoDisponibleError(Exception):
     pass
 
-class UsuarioNoEncontradoError(Exception): #Si no existe el user
+
+class RoomNoEncontradaError(Exception):
     pass
 
-class RoomNoEncontradaError(Exception): #Si no se encuentra el id de la habitacion
+
+class UsuarioNoEncontradoError(Exception):
     pass
 
-class RoomNoDisponibleError(Exception): # Si la habitacionque intenta tomar ya esta ocupada
+
+class ReservaNoEncontradaError(Exception):
     pass
 
-class ReservaNoEncontradaError(Exception): #Si no existe una reserva con ese id
-    pass
 
+class DatosInvalidosError(Exception):
+    pass
 

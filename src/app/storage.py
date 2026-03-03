@@ -20,7 +20,17 @@ def _guardar(data: dict) -> None:
 class UsuarioStorage:
 
     def obtener_todos(self) -> list[Usuario]:
-        return [Usuario(**{**u, "id_user": u["id"]}) for u in _leer().get("usuarios", [])]
+        usuarios = []
+        for u in _leer().get("usuarios", []):
+            usuarios.append(Usuario(
+                id_user=u["id"],
+                name=u["name"],
+                edad=u["edad"],
+                sexo=u["sexo"],
+                telefono=u["telefono"],
+                email=u["email"],
+            ))
+        return usuarios
 
     def guardar(self, u: Usuario) -> None:
         data = _leer()
@@ -40,7 +50,16 @@ class UsuarioStorage:
 class RoomStorage:
 
     def obtener_todas(self) -> list[Room]:
-        return [Room(id=r["id"], tipo=r["tipo"], precio=r["precio"], caracteristicas=r["caracteristicas"], reservada_por=r.get("reservada_por")) for r in _leer().get("rooms", [])]
+        rooms = []
+        for r in _leer().get("rooms", []):
+            rooms.append(Room(
+                id=r["id"],
+                tipo=r["tipo"],
+                precio=r["precio"],
+                caracteristicas=r["caracteristicas"],
+                reservada_por=r.get("reservada_por"),
+            ))
+        return rooms
 
     def guardar(self, r: Room) -> None:
         data = _leer()
@@ -60,7 +79,17 @@ class RoomStorage:
 class ReservaStorage:
 
     def obtener_todas(self) -> list[Reserva]:
-        return [Reserva(id=r["id"], id_usuario=r["id_usuario"], id_room=r["id_room"], horas=r["horas"], total=r["total"], estado=r.get("estado", "activa")) for r in _leer().get("reservas", [])]
+        reservas = []
+        for r in _leer().get("reservas", []):
+            reservas.append(Reserva(
+                id=r["id"],
+                id_usuario=r["id_usuario"],
+                id_room=r["id_room"],
+                horas=r["horas"],
+                total=r["total"],
+                estado=r.get("estado", "activa"),
+            ))
+        return reservas
 
     def guardar(self, r: Reserva) -> None:
         data = _leer()
