@@ -70,6 +70,22 @@ def cancelar_reserva(
     except (ReservaNoEncontradaError, DatosInvalidosError) as e:
         console.print(f"[red]Error: {e}[/red]")
 
+@app.command()
+def listar_reservas() -> None:
+    reservas = _res.listar()
+    if not reservas:
+        console.print("[yellow]No hay reservas aun[/yellow]")
+        return
+    tabla = Table(title="Reservas")
+    tabla.add_column("ID", style="cyan")
+    tabla.add_column("Usuario ID")
+    tabla.add_column("Room ID")
+    tabla.add_column("Horas")
+    tabla.add_column("Total", style="green")
+    tabla.add_column("Estado", style="yellow")
+    for r in reservas:
+        tabla.add_row(str(r.id), str(r.id_usuario), str(r.horas), f"${r.total}", r.estado)
+        console.print(tabla)
 
 if __name__ == "__main__":
     app()
