@@ -1,5 +1,3 @@
-"""Menu principal del motel."""
-
 import typer
 from rich.console import Console
 from rich.table import Table
@@ -18,7 +16,6 @@ _res = ReservaService(ReservaStorage(), _rooms, _usr)
 
 @app.command()
 def ver_rooms() -> None:
-    """Ver todas las habitaciones."""
     tabla = Table(title="Habitaciones")
     tabla.add_column("ID", style="cyan")
     tabla.add_column("Tipo", style="magenta")
@@ -38,7 +35,6 @@ def registrar_usuario(
     telefono: str = typer.Option(..., prompt=True),
     email: str = typer.Option(..., prompt=True),) -> None:
 
-    """Registrar un usuario nuevo."""
     nuevo_id = max((u.id_user for u in _usr.listar()), default=0) + 1
     try:
         _usr.registrar(Usuario(id_user=nuevo_id, name=nombre, edad=edad, sexo=sexo, telefono=telefono, email=email))
@@ -63,7 +59,6 @@ def reservar(
 @app.command()
 def cancelar_reserva(
     reserva_id: int = typer.Option(..., prompt="ID de la reserva"),) -> None:
-    """Cancelar una reserva."""
     try:
         _res.cancelar(reserva_id)
         console.print(f"[yellow]Reserva {reserva_id} cancelada[/yellow]")
