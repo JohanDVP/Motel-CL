@@ -72,3 +72,8 @@ Tecnologias usadas:
 - Rich (Colores)
 - Pytest (Para correr los test)
 - IA (Herramienta de apoyo)
+
+
+
+Docstrings
+Excepciones

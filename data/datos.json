@@ -7,6 +7,14 @@
       "sexo": "masculino",
       "telefono": "111",
       "email": "gg@gmail.com"
+    },
+    {
+      "id": 2,
+      "name": "Leandro",
+      "edad": 26,
+      "sexo": "MASCULINO",
+      "telefono": "333333",
+      "email": "tintin@ŋmail.com"
     }
   ],
   "rooms": [
@@ -29,7 +37,7 @@
         "Baño privado",
         "TV"
       ],
-      "reservada_por": 1
+      "reservada_por": null
     }
   ],
   "reservas": [
@@ -47,7 +55,7 @@
       "id_room": 2,
       "horas": 5,
       "total": 400.0,
-      "estado": "activa"
+      "estado": "cancelada"
     }
   ]
 }
