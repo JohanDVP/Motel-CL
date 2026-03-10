@@ -8,6 +8,17 @@ class UsuarioService:
     def __init__(self, storage: UsuarioStorage) -> None:
         self._storage = storage
 
+    """Ejemplo de Docstring
+
+    Args:
+        user: User instance containging the data to be stored
+    
+    Raises:
+        UserAlreadyExistsError: If a user with the same ID
+        already exists.
+        InvalidUserDataError: If the user data is invalid.
+    """
+
     def listar(self) -> list[Usuario]:
         return self._storage.obtener_todos()
 

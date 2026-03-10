@@ -1,0 +1,37 @@
+site_name: Motelandro
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate #modo oscuro
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to dark mode
+
+pluggins:
+  - search:
+  - mkdocstrings:
+    handlers:
+      python:
+        paths: ["src"]
+
+nav: 
+  - Inicio: index.md
+  - Referencias: api.md
+  - Comandos: commands.md
+
+markdown_extension:
+ - admonition
+ - pymdownx.detail
+ -pymdownx.suoerfaces
+
+ 
+
+
