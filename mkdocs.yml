@@ -15,7 +15,7 @@ theme:
         icon: material/brightness-4
         name: Switch to dark mode
 
-pluggins:
+plugins:
   - search:
   - mkdocstrings:
     handlers:
