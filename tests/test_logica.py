@@ -1,3 +1,10 @@
+"""
+Integration tests for the service layer.
+
+Tests business logic for users, rooms, and reservations
+using mock storage to avoid touching the real JSON file.
+"""
+
 import pytest
 from unittest.mock import MagicMock
 
@@ -15,12 +22,30 @@ from src.app.exceptions import (
 # ── Helpers ──────────────────────────────────────────────────────────────────
 
 def hacer_rooms(rooms: list[Room]) -> RoomService:
+    """
+    Creates a RoomService with a mocked storage.
+
+    Args:
+        rooms (list[Room]): Rooms to return from mock storage.
+
+    Returns:
+        RoomService: Service instance with fake data.
+    """
     storage = MagicMock()
     storage.obtener_todas.return_value = rooms
     return RoomService(storage)
 
 
 def hacer_usuarios(usuarios: list[Usuario]) -> UsuarioService:
+    """
+    Creates a UsuarioService with a mocked storage.
+
+    Args:
+        usuarios (list[Usuario]): Users to return from mock storage.
+
+    Returns:
+        UsuarioService: Service instance with fake data.
+    """
     storage = MagicMock()
     storage.obtener_todos.return_value = usuarios
     return UsuarioService(storage)
@@ -31,17 +56,46 @@ def hacer_reservas(
     rooms: list[Room],
     usuarios: list[Usuario],
 ) -> ReservaService:
+    """
+    Creates a ReservaService with mocked storage and dependencies.
+
+    Args:
+        reservas (list[Reserva]): Reservations to return from mock storage.
+        rooms (list[Room]): Rooms available for the service.
+        usuarios (list[Usuario]): Users available for the service.
+
+    Returns:
+        ReservaService: Service instance with fake data.
+    """
     storage = MagicMock()
     storage.obtener_todas.return_value = reservas
     return ReservaService(storage, hacer_rooms(rooms), hacer_usuarios(usuarios))
 
 
 def usuario_valido(**kwargs) -> Usuario:
+    """
+    Returns a valid Usuario instance with default values.
+
+    Args:
+        **kwargs: Override any default field values.
+
+    Returns:
+        Usuario: A valid user instance.
+    """
     defaults = dict(id_user=1, name="Maria", edad=30, sexo="F", telefono="123", email="m@m.com")
     return Usuario(**{**defaults, **kwargs})
 
 
 def room_disponible(**kwargs) -> Room:
+    """
+    Returns an available Room instance with default values.
+
+    Args:
+        **kwargs: Override any default field values.
+
+    Returns:
+        Room: An available room instance.
+    """
     defaults = dict(id=1, tipo="Sencilla", precio=50.0, reservada_por=None)
     return Room(**{**defaults, **kwargs})
 

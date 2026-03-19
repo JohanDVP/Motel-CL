@@ -1,3 +1,10 @@
+"""
+Unit tests for the data models.
+
+Verifies correct creation, default values, properties,
+and validation errors for Usuario, Room, and Reserva.
+"""
+
 import pytest
 from src.app.models import Usuario, Room, Reserva
 
