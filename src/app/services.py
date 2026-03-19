@@ -1,8 +1,8 @@
 """Capa de servicios del sistema Motel."""
 
-from app.models import Usuario, Room, Reserva
-from app.storage import UsuarioStorage, RoomStorage, ReservaStorage
-from app.exceptions import (
+from .models import Usuario, Room, Reserva
+from .storage import UsuarioStorage, RoomStorage, ReservaStorage
+from .exceptions import (
     RoomNoDisponibleError,
     RoomNoEncontradaError,
     UsuarioNoEncontradoError,
