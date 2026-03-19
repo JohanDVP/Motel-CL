@@ -64,6 +64,10 @@ Para correr los test:
 
 uv run pytest tests/ -v
 
+Para medir complejidad ciclomatica:
+
+uv run radon cc src -a  
+
 Tecnologias usadas:
 
 - Python 3.12
