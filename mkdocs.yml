@@ -8,30 +8,36 @@ theme:
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
-    - scheme: slate #modo oscuro
+    - scheme: slate
       primary: indigo
       accent: indigo
       toggle:
         icon: material/brightness-4
-        name: Switch to dark mode
+        name: Switch to light mode
 
 plugins:
-  - search:
+  - search
   - mkdocstrings:
-    handlers:
-      python:
-        paths: ["src"]
+      handlers:
+        python:
+          paths: ["."]
 
-nav: 
+nav:
   - Inicio: index.md
   - Referencias: api.md
-  - Comandos: commands.md
+  - Comandos: user-guide/commands.md
+  - Guia de inicio: getting-started.md
+  - Arquitectura: architecture.md
+  - Referencia: reference.md
+  - Persistencia: user-guide/persistence.md
 
-markdown_extension:
- - admonition
- - pymdownx.detail
- -pymdownx.suoerfaces
-
- 
-
-
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
