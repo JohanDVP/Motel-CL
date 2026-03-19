@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+
 from .models import Usuario, Room, Reserva
 
 RUTA = Path(__file__).parent.parent.parent / "data" / "datos.json"
@@ -17,90 +18,96 @@ def _guardar(data: dict) -> None:
         json.dump(data, f, indent=2, ensure_ascii=False)
 
 
+def _upsert(lista: list[dict], nuevo: dict, clave: str) -> list[dict]:
+    """Inserta o actualiza un elemento en la lista por clave."""
+    for i, item in enumerate(lista):
+        if item[clave] == nuevo[clave]:
+            lista[i] = nuevo
+            return lista
+    lista.append(nuevo)
+    return lista
+
+
 class UsuarioStorage:
 
     def obtener_todos(self) -> list[Usuario]:
-        usuarios = []
-        for u in _leer().get("usuarios", []):
-            usuarios.append(Usuario(
+        return [
+            Usuario(
                 id_user=u["id"],
                 name=u["name"],
                 edad=u["edad"],
                 sexo=u["sexo"],
                 telefono=u["telefono"],
                 email=u["email"],
-            ))
-        return usuarios
+            )
+            for u in _leer().get("usuarios", [])
+        ]
 
     def guardar(self, u: Usuario) -> None:
         data = _leer()
-        lista = data.get("usuarios", [])
-        nuevo = {"id": u.id_user, "name": u.name, "edad": u.edad, "sexo": u.sexo, "telefono": u.telefono, "email": u.email}
-        for i, x in enumerate(lista):
-            if x["id"] == u.id_user:
-                lista[i] = nuevo
-                data["usuarios"] = lista
-                _guardar(data)
-                return
-        lista.append(nuevo)
-        data["usuarios"] = lista
+        nuevo = {
+            "id": u.id_user,
+            "name": u.name,
+            "edad": u.edad,
+            "sexo": u.sexo,
+            "telefono": u.telefono,
+            "email": u.email,
+        }
+        data["usuarios"] = _upsert(data.get("usuarios", []), nuevo, "id")
         _guardar(data)
 
 
 class RoomStorage:
 
     def obtener_todas(self) -> list[Room]:
-        rooms = []
-        for r in _leer().get("rooms", []):
-            rooms.append(Room(
+        return [
+            Room(
                 id=r["id"],
                 tipo=r["tipo"],
                 precio=r["precio"],
                 caracteristicas=r["caracteristicas"],
                 reservada_por=r.get("reservada_por"),
-            ))
-        return rooms
+            )
+            for r in _leer().get("rooms", [])
+        ]
 
     def guardar(self, r: Room) -> None:
         data = _leer()
-        lista = data.get("rooms", [])
-        nuevo = {"id": r.id, "tipo": r.tipo, "precio": r.precio, "caracteristicas": r.caracteristicas, "reservada_por": r.reservada_por}
-        for i, x in enumerate(lista):
-            if x["id"] == r.id:
-                lista[i] = nuevo
-                data["rooms"] = lista
-                _guardar(data)
-                return
-        lista.append(nuevo)
-        data["rooms"] = lista
+        nuevo = {
+            "id": r.id,
+            "tipo": r.tipo,
+            "precio": r.precio,
+            "caracteristicas": r.caracteristicas,
+            "reservada_por": r.reservada_por,
+        }
+        data["rooms"] = _upsert(data.get("rooms", []), nuevo, "id")
         _guardar(data)
 
 
 class ReservaStorage:
 
     def obtener_todas(self) -> list[Reserva]:
-        reservas = []
-        for r in _leer().get("reservas", []):
-            reservas.append(Reserva(
+        return [
+            Reserva(
                 id=r["id"],
                 id_usuario=r["id_usuario"],
                 id_room=r["id_room"],
                 horas=r["horas"],
                 total=r["total"],
                 estado=r.get("estado", "activa"),
-            ))
-        return reservas
+            )
+            for r in _leer().get("reservas", [])
+        ]
 
     def guardar(self, r: Reserva) -> None:
         data = _leer()
-        lista = data.get("reservas", [])
-        nuevo = {"id": r.id, "id_usuario": r.id_usuario, "id_room": r.id_room, "horas": r.horas, "total": r.total, "estado": r.estado}
-        for i, x in enumerate(lista):
-            if x["id"] == r.id:
-                lista[i] = nuevo
-                data["reservas"] = lista
-                _guardar(data)
-                return
-        lista.append(nuevo)
-        data["reservas"] = lista
+        nuevo = {
+            "id": r.id,
+            "id_usuario": r.id_usuario,
+            "id_room": r.id_room,
+            "horas": r.horas,
+            "total": r.total,
+            "estado": r.estado,
+        }
+        data["reservas"] = _upsert(data.get("reservas", []), nuevo, "id")
         _guardar(data)
