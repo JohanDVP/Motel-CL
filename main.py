@@ -1,3 +1,9 @@
+"""
+Entry point for the Motelandro CLI application.
+
+Provides commands to manage users, rooms, and reservations.
+"""
+
 import typer
 from rich.console import Console
 from rich.table import Table
@@ -23,7 +29,9 @@ _res = ReservaService(ReservaStorage(), _rooms, _usr)
 
 @app.command()
 def ver_rooms() -> None:
-    """Ver todas las habitaciones y su estado."""
+    """
+    Displays all rooms with their current availability status.
+    """
     tabla = Table(title="Habitaciones")
     tabla.add_column("ID", style="cyan")
     tabla.add_column("Tipo", style="magenta")
@@ -43,7 +51,9 @@ def registrar_usuario(
     telefono: str = typer.Option(..., prompt=True),
     email: str = typer.Option(..., prompt=True),
 ) -> None:
-    """Registrar un nuevo usuario en el sistema."""
+    """
+    Registers a new user in the system interactively.
+    """
     nuevo_id = max((u.id_user for u in _usr.listar()), default=0) + 1
     try:
         _usr.registrar(
@@ -67,7 +77,9 @@ def reservar(
     id_room: int = typer.Option(..., prompt="ID de la habitacion"),
     horas: int = typer.Option(..., prompt="Cuantas horas"),
 ) -> None:
-    """Reservar una habitacion."""
+    """
+    Creates a reservation linking a user to an available room.
+    """
     try:
         r = _res.crear(id_usuario, id_room, horas)
         console.print(f"[green]Reserva creada! Total: ${r.total}[/green]")
@@ -79,7 +91,9 @@ def reservar(
 def cancelar_reserva(
     reserva_id: int = typer.Option(..., prompt="ID de la reserva"),
 ) -> None:
-    """Cancelar una reserva activa."""
+    """
+    Cancels an active reservation and releases the room.
+    """
     try:
         _res.cancelar(reserva_id)
         console.print(f"[yellow]Reserva {reserva_id} cancelada[/yellow]")
@@ -89,7 +103,9 @@ def cancelar_reserva(
 
 @app.command()
 def listar_reservas() -> None:
-    """Ver todas las reservas del sistema."""
+    """
+    Displays all reservations with their current status.
+    """
     reservas = _res.listar()
     if not reservas:
         console.print("[yellow]No hay reservas aun[/yellow]")
@@ -110,7 +126,7 @@ def listar_reservas() -> None:
             f"${r.total}",
             r.estado,
         )
-    console.print(tabla)  # moved outside loop (bug fix)
+    console.print(tabla)
 
 
 if __name__ == "__main__":
