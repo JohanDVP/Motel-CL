@@ -37,7 +37,7 @@ class UsuarioService:
 
 
 class RoomService:
-
+    
     def __init__(self, storage: RoomStorage) -> None:
         self._storage = storage
 

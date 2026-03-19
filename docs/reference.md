@@ -1,9 +1,3 @@
-# API Reference
-
-Esta sección expone la documentación técnica generada automáticamente desde el código fuente del proyecto.
-
-
-
 ## Modelos
 
 ### Usuario
@@ -14,7 +8,6 @@ Esta sección expone la documentación técnica generada automáticamente desde 
 
 ### Reserva
 ::: src.app.models.Reserva
-
 
 
 ## Servicios
@@ -29,7 +22,8 @@ Esta sección expone la documentación técnica generada automáticamente desde 
 ::: src.app.services.ReservaService
 
 
-## Storage
+
+## Capa de Persistencia
 
 ### UsuarioStorage
 ::: src.app.storage.UsuarioStorage
@@ -39,3 +33,7 @@ Esta sección expone la documentación técnica generada automáticamente desde 
 
 ### ReservaStorage
 ::: src.app.storage.ReservaStorage
+
+
+## Excepciones
+::: src.app.exceptions
