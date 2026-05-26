@@ -81,3 +81,6 @@ Tecnologias usadas:
 
 Docstrings
 Excepciones
+
+
+python -m uvicorn src.api.web_api:app --reload
