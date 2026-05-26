@@ -15,6 +15,14 @@
       "sexo": "MASCULINO",
       "telefono": "333333",
       "email": "tintin@ŋmail.com"
+    },
+    {
+      "id": 3,
+      "name": "Carlos Alguien",
+      "edad": 30,
+      "sexo": "M",
+      "telefono": "987654321",
+      "email": "carlos@correo.com"
     }
   ],
   "rooms": [
@@ -37,7 +45,7 @@
         "Baño privado",
         "TV"
       ],
-      "reservada_por": null
+      "reservada_por": 3
     }
   ],
   "reservas": [
@@ -56,6 +64,14 @@
       "horas": 5,
       "total": 400.0,
       "estado": "cancelada"
+    },
+    {
+      "id": 3,
+      "id_usuario": 3,
+      "id_room": 2,
+      "horas": 3,
+      "total": 240.0,
+      "estado": "activa"
     }
   ]
 }

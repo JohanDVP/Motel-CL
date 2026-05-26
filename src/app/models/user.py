@@ -71,9 +71,14 @@ class Usuario:
     def _validar_sexo(self) -> None:
         """
         Validates that the gender is one of the allowed values.
-
-        Raises:
-            ValueError: If the gender value is not valid.
         """
+        # Si viene de la base de datos con la palabra larga, la corregimos automáticamente
+        if isinstance(self.sexo, str):
+            if self.sexo.lower() in ("masculino", "hombre"):
+                self.sexo = "M"
+            elif self.sexo.lower() in ("femenino", "mujer"):
+                self.sexo = "F"
+
+        # Validación estricta final
         if self.sexo not in ("M", "F", "Otro"):
             raise ValueError(f"Sexo invalido: '{self.sexo}'. Debe ser M, F u Otro")
