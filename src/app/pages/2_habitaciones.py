@@ -7,12 +7,15 @@ import streamlit as st
 # Asegúrate de que esta URL coincida con la de tu servidor FastAPI
 API_URL = "http://localhost:8000/rooms"
 
-st.set_page_config(page_title="Gestión de Habitaciones", page_icon="🛏️", layout="wide")
+st.set_page_config(
+    page_title="Gestión de Habitaciones", page_icon="🛏️", layout="wide"
+)
 st.title("🛏️ Control de Habitaciones")
 
 tab_listar, tab_crear, tab_acciones = st.tabs(
     ["📋 Inventario", "➕ Agregar Nueva", "⚙️ Modificar / Eliminar"]
 )
+
 
 def get_rooms(params: dict | None = None):
     """Obtiene la lista de habitaciones desde la API."""
@@ -22,6 +25,7 @@ def get_rooms(params: dict | None = None):
         return response.json()
     except requests.exceptions.RequestException:
         return None
+
 
 with tab_listar:
     st.subheader("Habitaciones del Sistema")
@@ -39,26 +43,29 @@ with tab_listar:
 with tab_crear:
     with st.form("form_crear_room", clear_on_submit=True):
         numero = st.text_input("Número de Habitación:")
-        tipo = st.selectbox("Tipo:", ["Sencilla", "Doble", "Suite"])
+        tipo = st.selectbox("Tipo:", ["Sencilla", "Doble", "Suite", "Jacuzzi"])
         precio = st.number_input("Precio ($):", min_value=1.0, value=20.0)
-        
-        # Campo para capturar características como texto separado por comas
+
         caracteristicas_input = st.text_input(
-            "Características (separadas por coma):", 
-            help="Ejemplo: TV, Wi-Fi, Aire Acondicionado"
+            "Características (separadas por coma):",
+            help="Ejemplo: TV, Wi-Fi, Aire Acondicionado",
         )
 
         if st.form_submit_button("Guardar"):
-            # Procesamos el input para convertirlo en una lista de strings
-            lista_caracteristicas = [c.strip() for c in caracteristicas_input.split(",")] if caracteristicas_input else []
-            
+            if caracteristicas_input:
+                lista_caracteristicas = [
+                    c.strip() for c in caracteristicas_input.split(",")
+                ]
+            else:
+                lista_caracteristicas = []
+
             payload = {
                 "numero": numero,
                 "tipo": tipo,
                 "precio": precio,
                 "caracteristicas": lista_caracteristicas,
             }
-            
+
             try:
                 r = requests.post(API_URL, json=payload, timeout=10)
                 if r.status_code == 201:
