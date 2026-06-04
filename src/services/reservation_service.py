@@ -12,7 +12,6 @@ from src.core.exceptions import (
     DatosInvalidosError,
 )
 
-
 class ReservaService:
     def __init__(
         self,
@@ -28,22 +27,24 @@ class ReservaService:
         """Retrieves the complete reservation history."""
         return self._repository.get_all()
 
+    # NUEVO: Método buscar para reutilizar en validaciones y exponer en API
+    def buscar(self, reserva_id: int) -> ReservaResponse:
+        """Finds a reservation by ID. Raises error if not found."""
+        reserva = self._repository.get_by_id(reserva_id)
+        if reserva is None:
+            raise ReservaNoEncontradaError(f"La reserva con ID {reserva_id} no existe.")
+        return reserva
+
     def crear(self, command: ReservaCreate) -> ReservaResponse:
-        """
-        Creates a new reservation, updates room occupancy, and persists to Supabase.
-        """
-        # 1. Validar de forma estricta que existan tanto el usuario como la habitación
+        """Creates a new reservation, updates room occupancy, and persists to Supabase."""
         usuario = self._user_service.buscar(command.id_usuario)
         room = self._room_service.buscar(command.id_room)
 
-        # 2. Validar reglas de negocio: Disponibilidad de la habitación
         if room.reservada_por is not None:
             raise RoomNoDisponibleError(f"La habitación {room.id} ya se encuentra reservada.")
 
-        # 3. Calcular el total financiero de forma segura en el servidor
         total_calculado = room.precio * command.horas
 
-        # 4. Construir el payload exacto para la base de datos relacional
         payload = {
             "id_usuario": usuario.id_user,
             "id_room": room.id,
@@ -52,27 +53,44 @@ class ReservaService:
             "estado": "activa",
         }
 
-        # 5. Guardar la reserva y marcar la habitación como ocupada en Supabase de forma atómica
         reserva_guardada = self._repository.create(payload)
-        self._room_service._repository.update_reservation(room.id, usuario.id_user)
-
+        self._room_service.marcar_como_ocupada(room.id, usuario.id_user)
         return reserva_guardada
 
     def cancelar(self, reserva_id: int) -> ReservaResponse:
-        """
-        Cancels an active reservation and completely liberates the room.
-        """
-        reserva = self._repository.get_by_id(reserva_id)
-        if reserva is None:
-            raise ReservaNoEncontradaError(f"La reserva {reserva_id} no existe.")
+        """Cancels an active reservation and completely liberates the room."""
+        reserva = self.buscar(reserva_id)
 
         if reserva.estado != "activa":
             raise DatosInvalidosError("Únicamente se pueden cancelar reservaciones en estado 'activa'.")
 
-        # 1. Cambiar estado de la reserva en Supabase
         reserva_actualizada = self._repository.update_status(reserva_id, "cancelada")
-        
-        # 2. Liberar la habitación (establecer reservada_por en NULL/None)
-        self._room_service._repository.update_reservation(reserva.id_room, None)
-
+        self._room_service.liberar_habitacion(reserva.id_room)
         return reserva_actualizada
+
+    # NUEVO: Actualizar parámetros recalculando finanzas de manera limpia
+    def actualizar(self, reserva_id: int, command: ReservaCreate) -> ReservaResponse:
+        """Updates reservation details and recalculates the final pricing structure."""
+        self.buscar(reserva_id)  # Valida que exista
+        
+        # Validamos que los nuevos datos de habitación y usuario sean reales
+        self._user_service.buscar(command.id_usuario)
+        room = self._room_service.buscar(command.id_room)
+        
+        total_calculado = room.precio * command.horas
+        
+        payload = {
+            "id_usuario": command.id_usuario,
+            "id_room": command.id_room,
+            "horas": command.horas,
+            "total": total_calculado,
+        }
+        return self._repository.update(reserva_id, payload)
+
+    # NUEVO: Eliminar físicamente y liberar la habitación si estaba ocupada
+    def eliminar(self, reserva_id: int) -> None:
+        """Removes a reservation record and safely unlocks its associated room."""
+        reserva = self.buscar(reserva_id)
+        if reserva.estado == "activa":
+            self._room_service.liberar_habitacion(reserva.id_room)
+        self._repository.delete(reserva_id)

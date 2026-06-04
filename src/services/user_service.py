@@ -30,3 +30,25 @@ class UsuarioService:
     def registrar(self, usuario: UsuarioCreate) -> UsuarioResponse:
         """Registers a new user after schema validation."""
         return self._repository.create(usuario)
+
+    def actualizar(self, id_user: int, datos: UsuarioCreate) -> UsuarioResponse:
+        """
+        Updates an existing user's information after validation.
+        
+        Raises:
+            UsuarioNoEncontradoError: If the user doesn't exist.
+        """
+        # Forzamos la validación de existencia antes de actualizar
+        self.buscar(id_user)
+        return self._repository.update(id_user, datos)
+
+    def eliminar(self, id_user: int) -> None:
+        """
+        Deletes a user from the system.
+        
+        Raises:
+            UsuarioNoEncontradoError: If the user doesn't exist.
+        """
+        # Forzamos la validación de existencia antes de eliminar
+        self.buscar(id_user)
+        self._repository.delete(id_user)

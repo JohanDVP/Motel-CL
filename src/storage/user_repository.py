@@ -28,3 +28,15 @@ class UserRepository:
         if not response.data:
             return None
         return UsuarioResponse.model_validate(response.data[0])
+
+    # NUEVO: Método para actualizar en Supabase exigido por el servicio
+    def update(self, id_user: int, user_data: UsuarioCreate) -> UsuarioResponse:
+        """Actualiza los datos de un usuario existente en Supabase."""
+        payload = user_data.model_dump()
+        response = self.client.table(self.table).update(payload).eq("id_user", id_user).execute()
+        return UsuarioResponse.model_validate(response.data[0])
+
+    # NUEVO: Método para eliminar en Supabase exigido por el servicio
+    def delete(self, id_user: int) -> None:
+        """Elimina un usuario de la base de datos por su ID."""
+        self.client.table(self.table).delete().eq("id_user", id_user).execute()

@@ -37,3 +37,19 @@ class ReservationRepository:
             .execute()
         )
         return ReservaResponse.model_validate(response.data[0])
+
+    # NUEVO: Permite modificar el cuerpo de la reserva si cambian de habitación o de horas
+    def update(self, id_reserva: int, reservation_data: dict) -> ReservaResponse:
+        """Actualiza los datos estructurales de una reserva existente."""
+        response = (
+            self.client.table(self.table)
+            .update(reservation_data)
+            .eq("id", id_reserva)
+            .execute()
+        )
+        return ReservaResponse.model_validate(response.data[0])
+
+    # NUEVO: Eliminación física de registros
+    def delete(self, id_reserva: int) -> None:
+        """Elimina permanentemente el registro de una reserva de la base de datos."""
+        self.client.table(self.table).delete().eq("id", id_reserva).execute()
