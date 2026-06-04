@@ -88,3 +88,7 @@ python -m uvicorn src.api.web_api:app --reload
 
 uv run uvicorn src.api.main:app --reload
 uv run streamlit run src/app/main.py
+radon:
+uv run radon cc src -s -a -n A
+test: (crear mas)
+uv run pytest
