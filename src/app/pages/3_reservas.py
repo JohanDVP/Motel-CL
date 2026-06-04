@@ -62,7 +62,11 @@ with tab_nueva:
 
                     if uid and rid:
                         payload = {"id_usuario": uid, "id_room": rid, "horas": horas}
-                        resp = safe_api_call("reservas/", method="POST", payload=payload)
+                        resp = safe_api_call(
+                            "reservas/", 
+                            method="POST", 
+                            payload=payload
+                        )
 
                         if resp and resp.status_code in [200, 201]:
                             st.success("Reserva creada correctamente.")
