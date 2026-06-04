@@ -2,8 +2,7 @@
 Unit tests for verifying system custom exceptions.
 """
 
-import pytest
-from src.core.exceptions import MotelError, DatosInvalidosError
+from src.core.exceptions import DatosInvalidosError, MotelError
 
 
 def test_custom_exceptions_inheritance():

@@ -3,6 +3,7 @@ User Repository implementation using Supabase.
 """
 
 from supabase import Client
+
 from src.schemas.user import UsuarioCreate, UsuarioResponse
 
 
@@ -24,7 +25,9 @@ class UserRepository:
 
     def get_by_id(self, id_user: int) -> UsuarioResponse | None:
         """Busca un usuario por su ID único."""
-        response = self.client.table(self.table).select("*").eq("id_user", id_user).execute()
+        response = (
+            self.client.table(self.table).select("*").eq("id_user", id_user).execute()
+        )
         if not response.data:
             return None
         return UsuarioResponse.model_validate(response.data[0])
@@ -33,7 +36,12 @@ class UserRepository:
     def update(self, id_user: int, user_data: UsuarioCreate) -> UsuarioResponse:
         """Actualiza los datos de un usuario existente en Supabase."""
         payload = user_data.model_dump()
-        response = self.client.table(self.table).update(payload).eq("id_user", id_user).execute()
+        response = (
+            self.client.table(self.table)
+            .update(payload)
+            .eq("id_user", id_user)
+            .execute()
+        )
         return UsuarioResponse.model_validate(response.data[0])
 
     # NUEVO: Método para eliminar en Supabase exigido por el servicio

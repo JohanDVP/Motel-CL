@@ -4,11 +4,7 @@ Main entry point for the Streamlit Frontend application.
 
 import streamlit as st
 
-st.set_page_config(
-    page_title="Motelandro Dashboard",
-    page_icon="🏨",
-    layout="wide"
-)
+st.set_page_config(page_title="Motelandro Dashboard", page_icon="🏨", layout="wide")
 
 st.title("🏨 Bienvenido a Motelandro Management System")
 st.markdown("---")

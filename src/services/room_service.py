@@ -2,9 +2,9 @@
 Business logic service handling motel room management and status updates.
 """
 
-from src.storage.room_repository import RoomRepository
-from src.schemas.room import RoomCreate, RoomResponse
 from src.core.exceptions import RoomNoEncontradaError
+from src.schemas.room import RoomCreate, RoomResponse
+from src.storage.room_repository import RoomRepository
 
 
 class RoomService:
@@ -21,7 +21,7 @@ class RoomService:
 
     def buscar(self, room_id: int) -> RoomResponse:
         """
-        Finds a room by its ID. 
+        Finds a room by its ID.
         Raises RoomNoEncontradaError if the room does not exist.
         """
         room = self._repository.get_by_id(room_id)
@@ -35,20 +35,22 @@ class RoomService:
 
     def actualizar(self, room_id: int, room_data: RoomCreate) -> RoomResponse:
         """Updates an existing room's features or price."""
-        self.buscar(room_id)  # Valida existencia
+        self.buscar(room_id)
         return self._repository.update(room_id, room_data)
 
     def eliminar(self, room_id: int) -> None:
         """Deletes a room from the system layout."""
-        self.buscar(room_id)  # Valida existencia
+        self.buscar(room_id)
         self._repository.delete(room_id)
 
     def marcar_como_ocupada(self, room_id: int, user_id: int) -> None:
-        """Public method to safely change a room's status to occupied by a user."""
+        """Changes a room's status to occupied by a user."""
         self.buscar(room_id)
         self._repository.update_reservation(room_id, user_id)
 
     def liberar_habitacion(self, room_id: int) -> None:
-        """Public method to clear room occupancy, setting the reservation holder to None."""
+        """
+        Clears room occupancy, setting the reservation holder to None.
+        """
         self.buscar(room_id)
         self._repository.update_reservation(room_id, None)

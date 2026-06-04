@@ -27,7 +27,7 @@ class UsuarioBase(BaseModel):
                 v = "M"
             elif v.lower() in ("femenino", "mujer"):
                 v = "F"
-        
+
         if v not in ("M", "F", "Otro"):
             raise ValueError("Sexo inválido. Debe ser M, F u Otro")
         return v
@@ -36,17 +36,21 @@ class UsuarioBase(BaseModel):
     @classmethod
     def _validar_telefono(cls, v: str) -> str:
         if not v.strip():
-            raise ValueError("El teléfono no puede estar vacío o contener solo espacios")
+            raise ValueError(
+                "El teléfono no puede estar vacío o contener solo espacios"
+            )
         return v.strip()
 
 
 class UsuarioCreate(UsuarioBase):
     """Schema for creating a new user (without ID)."""
+
     pass
 
 
 class UsuarioResponse(UsuarioBase):
     """Schema for returning user data (including database auto-generated ID)."""
+
     id_user: int
 
     model_config = {"from_attributes": True}

@@ -2,11 +2,12 @@
 FastAPI router for User endpoints.
 """
 
-from fastapi import APIRouter, HTTPException, status, Depends
-from src.services.user_service import UsuarioService
-from src.schemas.user import UsuarioCreate, UsuarioResponse
-from src.core.exceptions import UsuarioNoEncontradoError, MotelError
+from fastapi import APIRouter, Depends, HTTPException, status
+
 from src.api.dependencies import get_user_service
+from src.core.exceptions import MotelError, UsuarioNoEncontradoError
+from src.schemas.user import UsuarioCreate, UsuarioResponse
+from src.services.user_service import UsuarioService
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -23,34 +24,37 @@ def buscar_usuario(id_user: int, service: UsuarioService = Depends(get_user_serv
     try:
         return service.buscar(id_user)
     except UsuarioNoEncontradoError as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
 
 
 @router.post("/", response_model=UsuarioResponse, status_code=status.HTTP_201_CREATED)
 def registrar_usuario(
-    usuario: UsuarioCreate, 
-    service: UsuarioService = Depends(get_user_service)
+    usuario: UsuarioCreate, service: UsuarioService = Depends(get_user_service)
 ):
     """Registers a new user into the system."""
     try:
         return service.registrar(usuario)
     except MotelError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)
+        ) from e
 
 
 @router.put("/{id_user}", response_model=UsuarioResponse)
 def actualizar_usuario(
     id_user: int,
     usuario: UsuarioCreate,
-    service: UsuarioService = Depends(get_user_service)
+    service: UsuarioService = Depends(get_user_service),
 ):
     """Updates an existing user's profiles details."""
     try:
         return service.actualizar(id_user, usuario)
     except UsuarioNoEncontradoError as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
     except MotelError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_QRSTUVWXYZ_REQUEST, detail=str(e)
+        ) from e
 
 
 @router.delete("/{id_user}", status_code=status.HTTP_204_NO_CONTENT)
@@ -59,6 +63,8 @@ def eliminar_usuario(id_user: int, service: UsuarioService = Depends(get_user_se
     try:
         service.eliminar(id_user)
     except UsuarioNoEncontradoError as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
     except MotelError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)
+        ) from e

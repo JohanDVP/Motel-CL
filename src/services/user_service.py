@@ -2,9 +2,9 @@
 Business logic service for managing motel clients.
 """
 
-from src.storage.user_repository import UserRepository
-from src.schemas.user import UsuarioCreate, UsuarioResponse
 from src.core.exceptions import UsuarioNoEncontradoError
+from src.schemas.user import UsuarioCreate, UsuarioResponse
+from src.storage.user_repository import UserRepository
 
 
 class UsuarioService:
@@ -18,7 +18,7 @@ class UsuarioService:
     def buscar(self, id_user: int) -> UsuarioResponse:
         """
         Finds a user by their unique database ID.
-        
+
         Raises:
             UsuarioNoEncontradoError: If the user doesn't exist.
         """
@@ -34,7 +34,7 @@ class UsuarioService:
     def actualizar(self, id_user: int, datos: UsuarioCreate) -> UsuarioResponse:
         """
         Updates an existing user's information after validation.
-        
+
         Raises:
             UsuarioNoEncontradoError: If the user doesn't exist.
         """
@@ -45,7 +45,7 @@ class UsuarioService:
     def eliminar(self, id_user: int) -> None:
         """
         Deletes a user from the system.
-        
+
         Raises:
             UsuarioNoEncontradoError: If the user doesn't exist.
         """

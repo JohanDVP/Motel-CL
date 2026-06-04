@@ -3,6 +3,7 @@ Room Repository implementation using Supabase.
 """
 
 from supabase import Client
+
 from src.schemas.room import RoomCreate, RoomResponse
 
 
@@ -56,10 +57,7 @@ class RoomRepository:
         """Actualiza los detalles técnicos o precio de una habitación existente."""
         payload = room_data.model_dump()
         response = (
-            self.client.table(self.table)
-            .update(payload)
-            .eq("id", id_room)
-            .execute()
+            self.client.table(self.table).update(payload).eq("id", id_room).execute()
         )
         return RoomResponse.model_validate(response.data[0])
 
