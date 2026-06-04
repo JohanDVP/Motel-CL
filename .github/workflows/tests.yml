@@ -2,9 +2,9 @@ name: Tests
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "master"]
   pull_request:
-    branches: ["main"]
+    branches: ["main", "master"]
 
 jobs:
   test:
@@ -20,19 +20,15 @@ jobs:
           python-version: "3.12"
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v4
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
 
       - name: Install dependencies
         run: uv sync
 
       - name: Run tests
-        run: uv run pytest tests/ -v
+        run: uv run pytest
 
-      - name: Check code complexity
-        run: |
-          uv run radon cc src -a --min A
-          if [ $? -ne 0 ]; then
-            echo "❌ Complejidad ciclomatica superior al nivel permitido (A)"
-            exit 1
-          fi
-          echo "✅ Complejidad ciclomatica dentro del nivel A"
+      - name: Check code complexity (Radon)
+        run: uv run radon cc src -s -a -n A
