@@ -11,8 +11,9 @@ dependencies = [
     "radon>=6.0.1",
     "rich>=14.3.3",
     "typer>=0.24.1",
-    "httpx>=0.27.0",  # <--- Ahora está aquí para que los tests pasen
+    "httpx>=0.27.0",  
     "requests>=2.31.0",
+    "supabase>=2.0.0",
 ]
 
 [dependency-groups]

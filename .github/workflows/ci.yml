@@ -34,10 +34,17 @@ jobs:
         run: uv run radon cc src -s -a -n A
 
       - name: Run tests (Pytest)
+        env:
+          # Estas variables toman los valores que configuraste en GitHub Secrets
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
         run: uv run pytest
 
-      - name: Deploy Documentation to GitHub Pages
+      # Mantuve esta sección solo si necesitas que el CI despliegue, 
+      # aunque tu docs.yml ya debería hacerlo.
+      - name: Deploy Documentation
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
         run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           uv run mkdocs gh-deploy --force
-    
