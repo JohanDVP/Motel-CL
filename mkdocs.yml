@@ -5,39 +5,29 @@ theme:
     - scheme: default
       primary: indigo
       accent: indigo
-      toggle:
-        icon: material/brightness-7
-        name: Switch to dark mode
     - scheme: slate
       primary: indigo
       accent: indigo
-      toggle:
-        icon: material/brightness-4
-        name: Switch to light mode
 
 plugins:
   - search
-  - mkdocstrings:
-      handlers:
-        python:
-          paths: ["."]
+  # - mkdocstrings: # Comentado temporalmente hasta que tengas los archivos
+  #     handlers:
+  #       python:
+  #         paths: ["."]
 
 nav:
   - Inicio: index.md
-  - Referencias: api.md
-  - Comandos: user-guide/commands.md
-  - Guia de inicio: getting-started.md
-  - Arquitectura: architecture.md
-  - Referencia: reference.md
-  - Persistencia: user-guide/persistence.md
+  # - Referencias: api.md
+  # - Comandos: user-guide/commands.md
+  # - Guia de inicio: getting-started.md
+  # - Arquitectura: architecture.md
+  # - Referencia: reference.md
+  # - Persistencia: user-guide/persistence.md
 
 markdown_extensions:
   - admonition
   - pymdownx.details
-  - pymdownx.superfences:
-      custom_fences:
-        - name: mermaid
-          class: mermaid
-          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.superfences
   - pymdownx.tabbed:
       alternate_style: true
