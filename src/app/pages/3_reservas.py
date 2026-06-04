@@ -10,7 +10,6 @@ API_BASE = "http://localhost:8000"
 st.set_page_config(page_title="Gestión de Reservas", page_icon="📅", layout="wide")
 st.title("📅 Panel de Reservaciones")
 
-
 def safe_api_call(endpoint, method="GET", payload=None):
     """Realiza peticiones seguras a la API manejando excepciones."""
     try:
@@ -20,10 +19,10 @@ def safe_api_call(endpoint, method="GET", payload=None):
             return requests.get(url, timeout=10)
         if method == "POST":
             return requests.post(url, json=payload, timeout=10)
-        return requests.delete(url, timeout=10)
+        if method == "DELETE":
+            return requests.delete(url, timeout=10)
     except requests.exceptions.RequestException:
         return None
-
 
 tab_hist, tab_nueva, tab_gest = st.tabs(["📋 Historial", "⚡ Crear", "🚫 Gestionar"])
 
@@ -43,13 +42,8 @@ with tab_nueva:
 
     if users and rooms:
         with st.form("new_res"):
-            # Ajuste de líneas para evitar E501 (Line too long)
-            u_sel = st.selectbox(
-                "Cliente:", [u.get("name", "Desconocido") for u in users]
-            )
-            r_sel = st.selectbox(
-                "Habitación:", [r.get("numero", "N/A") for r in rooms]
-            )
+            u_sel = st.selectbox("Cliente:", [u.get("name", "Desconocido") for u in users])
+            r_sel = st.selectbox("Habitación:", [r.get("numero", "N/A") for r in rooms])
             horas = st.number_input("Horas de estadía:", min_value=1, step=1, value=1)
 
             if st.form_submit_button("Iniciar"):
@@ -62,21 +56,47 @@ with tab_nueva:
 
                     if uid and rid:
                         payload = {"id_usuario": uid, "id_room": rid, "horas": horas}
-                        resp = safe_api_call(
-                            "reservas/", 
-                            method="POST", 
-                            payload=payload
-                        )
-
+                        resp = safe_api_call("reservas/", method="POST", payload=payload)
                         if resp and resp.status_code in [200, 201]:
                             st.success("Reserva creada correctamente.")
                             st.rerun()
                         else:
-                            error_text = resp.text if resp else "Sin respuesta"
-                            st.error(f"Error del servidor: {error_text}")
+                            st.error(f"Error del servidor: {resp.text if resp else 'Sin respuesta'}")
                     else:
                         st.error("No se pudo obtener el ID necesario.")
                 else:
                     st.error("Error al buscar cliente o habitación.")
     else:
         st.warning("Cargando datos o no hay recursos disponibles...")
+
+with tab_gest:
+    st.subheader("Gestión de Reservas")
+    resp = safe_api_call("reservas/")
+    
+    if resp and resp.status_code == 200:
+        reservas = resp.json()
+        if reservas:
+            opciones = {f"Reserva #{r['id']} (Hab: {r['id_room']})": r for r in reservas}
+            sel = st.selectbox("Seleccionar reserva a gestionar:", opciones.keys())
+            res_sel = opciones[sel]
+            
+            st.write(f"Estado actual: **{res_sel['estado']}**")
+            
+            if st.button("🚨 Eliminar reserva permanentemente", type="primary"):
+                url_del = f"{API_BASE}/reservas/{res_sel['id']}"
+                try:
+                    r = requests.delete(url_del, timeout=10)
+                    
+                    # --- AQUÍ ESTÁ LA CORRECCIÓN (OPCIÓN A) ---
+                    # Aceptamos tanto 200 (OK) como 204 (No Content)
+                    if r.status_code in [200, 204]:
+                        st.success("Reserva eliminada y habitación liberada.")
+                        st.rerun()
+                    else:
+                        st.error(f"Error al eliminar: {r.text}")
+                except Exception as e:
+                    st.error(f"Error de conexión: {e}")
+        else:
+            st.info("No hay reservas registradas para gestionar.")
+    else:
+        st.error("No se pudieron cargar las reservas.")
