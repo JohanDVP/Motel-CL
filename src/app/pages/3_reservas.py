@@ -1,10 +1,10 @@
 """
-Módulo para la gestión de reservas.
+Módulo para la gestión de reservas de Motelandro.
 """
 import requests
 import streamlit as st
 
-# URL de tu servidor FastAPI
+# URL del servidor FastAPI
 API_BASE = "http://localhost:8000"
 
 st.set_page_config(page_title="Gestión de Reservas", page_icon="📅", layout="wide")
@@ -12,17 +12,15 @@ st.title("📅 Panel de Reservaciones")
 
 
 def safe_api_call(endpoint, method="GET", payload=None):
-    """Función para realizar peticiones seguras a la API."""
+    """Realiza peticiones seguras a la API manejando excepciones."""
     try:
         clean_endpoint = endpoint.lstrip('/')
         url = f"{API_BASE}/{clean_endpoint}"
         if method == "GET":
-            response = requests.get(url, timeout=10)
-        elif method == "POST":
-            response = requests.post(url, json=payload, timeout=10)
-        else:
-            response = requests.delete(url, timeout=10)
-        return response
+            return requests.get(url, timeout=10)
+        if method == "POST":
+            return requests.post(url, json=payload, timeout=10)
+        return requests.delete(url, timeout=10)
     except requests.exceptions.RequestException:
         return None
 
@@ -45,6 +43,7 @@ with tab_nueva:
 
     if users and rooms:
         with st.form("new_res"):
+            # Ajuste de líneas para evitar E501 (Line too long)
             u_sel = st.selectbox(
                 "Cliente:", [u.get("name", "Desconocido") for u in users]
             )
@@ -58,7 +57,6 @@ with tab_nueva:
                 room_match = next((r for r in rooms if r.get("numero") == r_sel), None)
 
                 if user_match and room_match:
-                    # Uso de .get con fallback para evitar KeyError
                     uid = user_match.get("id_user") or user_match.get("id")
                     rid = room_match.get("id")
 
@@ -70,11 +68,11 @@ with tab_nueva:
                             st.success("Reserva creada correctamente.")
                             st.rerun()
                         else:
-                            msg = f"Error: {resp.text if resp else 'Sin respuesta'}"
-                            st.error(msg)
+                            error_text = resp.text if resp else "Sin respuesta"
+                            st.error(f"Error del servidor: {error_text}")
                     else:
                         st.error("No se pudo obtener el ID necesario.")
                 else:
-                    st.error("Error al buscar el cliente o la habitación.")
+                    st.error("Error al buscar cliente o habitación.")
     else:
         st.warning("Cargando datos o no hay recursos disponibles...")
