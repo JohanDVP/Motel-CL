@@ -43,7 +43,7 @@ with tab_listar:
 with tab_crear:
     with st.form("form_crear_room", clear_on_submit=True):
         numero = st.text_input("Número de Habitación:")
-        tipo = st.selectbox("Tipo:", ["Sencilla", "Doble", "Suite", "Jacuzzi"])
+        tipo = st.selectbox("Tipo:", ["Sencilla", "Doble", "Suite"])
         precio = st.number_input("Precio ($):", min_value=1.0, value=20.0)
 
         caracteristicas_input = st.text_input(
