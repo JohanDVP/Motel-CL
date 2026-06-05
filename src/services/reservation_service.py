@@ -1,6 +1,5 @@
-"""
-Business logic service handling the lifecycle of motel reservations.
-"""
+"""Servicio de lógica de negocio que maneja el ciclo de vida de las 
+reservas del motel."""
 
 from src.core.exceptions import (
     DatosInvalidosError,
@@ -14,31 +13,59 @@ from src.storage.reservation_repository import ReservationRepository
 
 
 class ReservaService:
+    """Clase de servicio para gestionar las operaciones de negocio de reservas del
+    motel."""
+
     def __init__(
         self,
         repository: ReservationRepository,
         room_service: RoomService,
         user_service: UsuarioService,
     ) -> None:
+        """Inicializa el servicio de reservas con las dependencias requeridas."""
         self._repository = repository
         self._room_service = room_service
         self._user_service = user_service
 
     def listar(self) -> list[ReservaResponse]:
-        """Retrieves the complete reservation history."""
+        """Recupera el historial completo de reservas desde el repositorio.
+
+        Returns:
+            list[ReservaResponse]: Una lista de todas las reservas registradas.
+        """
         return self._repository.get_all()
 
     def buscar(self, reserva_id: int) -> ReservaResponse:
-        """Finds a reservation by ID. Raises error if not found."""
+        """Busca una reserva por su ID.
+
+        Args:
+            reserva_id (int): El identificador único de la reserva.
+
+        Returns:
+            ReservaResponse: El objeto de la reserva encontrada.
+
+        Raises:
+            ReservaNoEncontradaError: Si no existe una reserva con el ID
+                proporcionado.
+        """
         reserva = self._repository.get_by_id(reserva_id)
         if reserva is None:
             raise ReservaNoEncontradaError(f"La reserva {reserva_id} no existe.")
         return reserva
 
     def crear(self, command: ReservaCreate) -> ReservaResponse:
-        """
-        Creates a new reservation, updates room occupancy,
-        and persists to Supabase.
+        """Crea una nueva reserva, actualiza la ocupación de la habitación y
+        persiste los datos.
+
+        Args:
+            command (ReservaCreate): Datos que contienen el ID de usuario,
+                ID de habitación y horas.
+
+        Returns:
+            ReservaResponse: La reserva recién creada.
+
+        Raises:
+            RoomNoDisponibleError: Si la habitación solicitada ya está ocupada.
         """
         usuario = self._user_service.buscar(command.id_usuario)
         room = self._room_service.buscar(command.id_room)
@@ -63,7 +90,17 @@ class ReservaService:
         return reserva_guardada
 
     def cancelar(self, reserva_id: int) -> ReservaResponse:
-        """Cancels an active reservation and completely liberates the room."""
+        """Cancela una reserva activa y libera completamente la habitación.
+
+        Args:
+            reserva_id (int): El ID de la reserva a cancelar.
+
+        Returns:
+            ReservaResponse: El objeto de la reserva actualizada.
+
+        Raises:
+            DatosInvalidosError: Si la reserva no está en estado 'activa'.
+        """
         reserva = self.buscar(reserva_id)
 
         if reserva.estado != "activa":
@@ -76,7 +113,15 @@ class ReservaService:
         return reserva_actualizada
 
     def actualizar(self, reserva_id: int, command: ReservaCreate) -> ReservaResponse:
-        """Updates reservation details and recalculates the final pricing."""
+        """Actualiza los detalles de la reserva y recalcula el precio final.
+
+        Args:
+            reserva_id (int): El ID de la reserva a actualizar.
+            command (ReservaCreate): Nuevos datos para la reserva.
+
+        Returns:
+            ReservaResponse: El objeto de la reserva actualizada.
+        """
         self.buscar(reserva_id)
 
         self._user_service.buscar(command.id_usuario)
@@ -93,7 +138,12 @@ class ReservaService:
         return self._repository.update(reserva_id, payload)
 
     def eliminar(self, reserva_id: int) -> None:
-        """Removes a reservation record and safely unlocks its associated room."""
+        """Elimina un registro de reserva y libera de forma segura su habitación
+        asociada.
+
+        Args:
+            reserva_id (int): El ID de la reserva a eliminar.
+        """
         reserva = self.buscar(reserva_id)
         if reserva.estado == "activa":
             self._room_service.liberar_habitacion(reserva.id_room)

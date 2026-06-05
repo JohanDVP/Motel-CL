@@ -1,4 +1,4 @@
-site_name: Motelandro
+site_name: Motelandro Documentation
 theme:
   name: material
   palette:
@@ -18,16 +18,17 @@ plugins:
   - mkdocstrings:
       handlers:
         python:
-          paths: ["."]
+          paths: ["."] 
           options:
             show_source: true
+            show_root_heading: true
 
 nav:
   - Inicio: index.md
-  # Descomenta conforme vayas creando tus archivos en la carpeta 'docs/'
-  # - API: api.md
-  # - Guía de Inicio: getting-started.md
-  # - Arquitectura: architecture.md
+  - API: api.md
+  - Servicios: service.md
+  - Almacenamiento: storage.md
+  - Modelo ER: modelo_er.md
 
 markdown_extensions:
   - admonition
