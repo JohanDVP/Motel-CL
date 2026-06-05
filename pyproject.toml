@@ -28,6 +28,10 @@ dev = [
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
+# Filtro para ignorar advertencias externas de librerías como Supabase
+filterwarnings = [
+    "ignore::DeprecationWarning:supabase.*"
+]
 
 [tool.ruff]
 line-length = 88
@@ -35,7 +39,7 @@ target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "B", "I"]
-ignore = ["B008"] # Ignorar B008 para permitir Depends en FastAPI
+ignore = ["B008"] 
 
 [tool.ruff.format]
 quote-style = "double"
