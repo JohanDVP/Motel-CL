@@ -54,7 +54,7 @@ Documentación:
 
 La documentación tecnica completa se encuentra disponible corriendo:
 
-uv run mkdocs serve
+uv run --active mkdocs serve 
 
 
 

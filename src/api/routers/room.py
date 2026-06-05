@@ -1,6 +1,4 @@
-"""
-FastAPI router for Room endpoints.
-"""
+"""Router de FastAPI para los endpoints de Habitaciones."""
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
@@ -17,7 +15,14 @@ def listar_habitaciones(
     disponibles_only: bool = False,
     service: RoomService = Depends(get_room_service),
 ):
-    """Retrieves rooms, optionally filtering by real-time availability."""
+    """Obtiene las habitaciones, filtrando opcionalmente por disponibilidad.
+
+    Args:
+        disponibles_only (bool): Si es True, solo lista habitaciones libres.
+
+    Returns:
+        list[RoomResponse]: Lista de habitaciones según el filtro.
+    """
     if disponibles_only:
         return service.listar_disponibles()
     return service.listar()
@@ -25,7 +30,17 @@ def listar_habitaciones(
 
 @router.get("/{id_room}", response_model=RoomResponse)
 def buscar_habitacion(id_room: int, service: RoomService = Depends(get_room_service)):
-    """Retrieves detailed information of a specific room."""
+    """Obtiene información detallada de una habitación específica.
+
+    Args:
+        id_room (int): El ID de la habitación.
+
+    Raises:
+        HTTPException: Si la habitación no se encuentra (404).
+
+    Returns:
+        RoomResponse: Información de la habitación.
+    """
     try:
         return service.buscar(id_room)
     except RoomNoEncontradaError as e:
@@ -36,7 +51,17 @@ def buscar_habitacion(id_room: int, service: RoomService = Depends(get_room_serv
 def crear_habitacion(
     room: RoomCreate, service: RoomService = Depends(get_room_service)
 ):
-    """Registers a new room layout in the system."""
+    """Registra una nueva habitación en el sistema.
+
+    Args:
+        room (RoomCreate): Datos para la nueva habitación.
+
+    Raises:
+        HTTPException: Si los datos son inválidos (400).
+
+    Returns:
+        RoomResponse: La habitación recién creada.
+    """
     try:
         return service.crear(room)
     except MotelError as e:
@@ -51,7 +76,18 @@ def actualizar_habitacion(
     room: RoomCreate,
     service: RoomService = Depends(get_room_service),
 ):
-    """Updates technical features or price details of a room."""
+    """Actualiza características técnicas o precios de una habitación.
+
+    Args:
+        id_room (int): El ID de la habitación a actualizar.
+        room (RoomCreate): Nuevos datos de la habitación.
+
+    Raises:
+        HTTPException: Si la habitación no se encuentra (404) o es inválida (400).
+
+    Returns:
+        RoomResponse: El objeto de la habitación actualizado.
+    """
     try:
         return service.actualizar(id_room, room)
     except RoomNoEncontradaError as e:
@@ -64,7 +100,14 @@ def actualizar_habitacion(
 
 @router.delete("/{id_room}", status_code=status.HTTP_204_NO_CONTENT)
 def eliminar_habitacion(id_room: int, service: RoomService = Depends(get_room_service)):
-    """Deletes a room tracking index from the system data layer."""
+    """Elimina el registro de una habitación del sistema.
+
+    Args:
+        id_room (int): El ID de la habitación a eliminar.
+
+    Raises:
+        HTTPException: Si no se encuentra (404) o no se puede eliminar (400).
+    """
     try:
         service.eliminar(id_room)
     except RoomNoEncontradaError as e:
