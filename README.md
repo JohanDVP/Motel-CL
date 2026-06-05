@@ -1,18 +1,27 @@
-Motelandro:
+Proyecto: Motelandro
 
-Sistema basico degestion de reservar para un motel, este nos permite, registrar usuarios, ver habitaciones disponibles, hacer reservas y cancelar estas mismas desde la linea de comandos.
+Sistema de gestión integral para el motel Motelandro, diseñado para optimizar el control de habitaciones, el registro de clientes y la administración de reservas en tiempo real.
 
 Que hace el proyecto?
 
-1) Ver todas las habitaciones del motel(solo tenemos 2, somos un motel pobre)
-2) Registrar usuarios nuevos
-3) Hacer una reserva, eligiendo habitacion y horas
-4) Cancelar una reserva existente
-5) Ver todas las reservar registradas hasta el momento.
+El proyecto cuenta con 3 funcionalidades especificas para 3 operaciones principales, las cuales son mirar, agregar y eliminar, estas 3 funcionalidades estan implementadas para el registro de usuarios, la creacion de habitaciones y la reserva de estas mismas.
 
-Instalación
+Estructura del Proyecto:
 
-Necesitas por obligación tener uv instalado, dirigete al siguiente link y sigue los pasos de instalacion que se te muestra en la pagina dependiendo de tu sistema operativo:
+project/
+├── src/
+│   ├── api/          # Endpoints y routers de FastAPI
+│   ├── app/          # Frontend con Streamlit
+│   ├── core/         # Configuración y excepciones de dominio
+│   ├── schemas/      # Modelos Pydantic
+│   ├── services/     # Lógica de negocio
+│   └── storage/      # Repositorios (Acceso a datos)
+├── tests/            # Pruebas unitarias e integración
+└── docs/             # Documentación técnica generada
+
+Instalación y Ejecución:
+
+1) Necesitas por obligación tener uv instalado, dirigete al siguiente link y sigue los pasos de instalacion que se te muestra en la pagina dependiendo de tu sistema operativo:
 
 https://docs.astral.sh/uv/getting-started/installation/
 
@@ -22,73 +31,66 @@ git clone (aqui va el link del repositorio)
 cd motelandro
 uv sync (Esto lee el archivo donde estan listadas todas las dependencias y las instala automaticamente como typer, pytest, etc)
 
-Como usarlo?
-
-- Para ver la gran basta cantidad de habitaciones del motel (solo 2):
-
-uv run python main.py ver-rooms
-
-- Para Registrar un usuario nuevo:
-
-uv run python main.py registrar-usuarios
-
-- Hacer una reserva de una habitacion:
-
-uv run python main.py reservar
-
-- Cancelar una reserva:
-
-uv run python main.py cancelar-reserva
-
-- Ver todas las reservas:
-
-uv run python main.py listar-reservas
-
-Estructura del proyecto:
-
-motelandro/
-├── data/
-│   └── datos.json       # Base de datos local
-├── src/app/
-│   ├── models.py        # Clases de datos
-│   ├── storage.py       # Lee y escribe el JSON
-│   ├── services.py      # Lógica del negocio
-│   └── exceptions.py    # Errores personalizados
-├── tests/
-│   ├── test_modelos.py
-│   └── test_logica.py
-├── main.py              # Interfaz de usuario
-└── pyproject.toml
-
-Para correr los test:
-
-uv run pytest tests/ -v
-
-Para medir complejidad ciclomatica:
-
-uv run radon cc src -a  
-
-Tecnologias usadas:
-
-- Python 3.12
-- uv (Gestion del proyecto)
-- Typer (Para comandos en el main.py)
-- Rich (Colores)
-- Pytest (Para correr los test)
-- IA (Herramienta de apoyo)
-
-
-
-Docstrings
-Excepciones
-
-
-python -m uvicorn src.api.web_api:app --reload
-
+2) Ejecutar Backend (FastAPI):
 
 uv run uvicorn src.api.main:app --reload
+
+3) Ejecutar Frontend (Streamlit):
+
 uv run streamlit run src/app/main.py
-radon:
-uv run radon cc src -s -a -n A
-test: (crear mas)
-uv run pytest
+
+Calidad y Automatización:
+
+1) Pruebas: (Para ejecutar las pruebas y verificar la cobertura)
+
+uv run pytest --cov=src
+
+2) Linting y Calidad: (Para verificar el estilo de código con Ruff y la complejidad con Radon)
+
+uv run ruff check src/
+uv run radon cc src/ -a -s
+
+Documentación:
+
+La documentación tecnica completa se encuentra disponible corriendo:
+
+uv run mkdocs serve
+
+
+
+Stack tecnologico Utilizado:
+
+1. Backend (API y Lógica)
+    
+    FastAPI: Framework moderno de alto rendimiento para construir APIs REST.
+
+    Pydantic: Utilizado para la validación de datos y la creación de esquemas (contratos de datos).
+
+    Python 3.12: Lenguaje base del proyecto.
+
+2. Base de Datos y Persistencia
+
+    Supabase: Plataforma Backend-as-a-Service basada en PostgreSQL, utilizada para almacenar y gestionar los datos del sistema.
+
+    Supabase-py: Librería cliente para la integración directa con Python.
+
+3. Frontend (Interfaz de Usuario)
+
+    Streamlit: Framework para crear aplicaciones web orientadas a datos de forma rápida, conectando el frontend directamente con la API mediante peticiones requests.
+
+4. Calidad, Automatización y DevOps
+
+    uv: Gestor de paquetes ultrarrápido y gestor de entornos virtuales.
+
+    Pytest: Framework para pruebas unitarias e integración.
+
+    Ruff: Linter y formateador de código extremadamente rápido para garantizar el cumplimiento de estándares.
+
+    Radon: Herramienta para medir la complejidad ciclomática del código (garantizando mantenibilidad "Grado A").
+
+    MkDocs (con Material theme): Generador de documentación técnica estática.
+
+    GitHub Actions: Automatización de workflows para CI/CD (integración y despliegue continuo).
+
+
+
